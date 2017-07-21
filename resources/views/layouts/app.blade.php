@@ -16,7 +16,7 @@
         		return flag;
         	}
         </script>
-
+        @include('commons.error_messages')
 
         @yield('content')
     </body>

@@ -19,9 +19,11 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = Task::all();
+        $arr_status = $this->GetArrStatus();
         
         return view('tasks.index', [
             'tasks' => $tasks,
+            'arr_status' => $arr_status,
         ]);
     }
 
@@ -47,7 +49,13 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'status' => 'required|max:10',   // added
+            'content' => 'required|max:255',
+        ]);
+        
         $task = new Task;
+        $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
         
@@ -63,9 +71,11 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::find($id);
+        $arr_status = $this->GetArrStatus();
         
         return view('tasks.show', [
             'task' => $task,
+            'arr_status' => $arr_status,
         ]);
     }
 
@@ -93,7 +103,13 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'status' => 'required|max:10',   // added
+            'content' => 'required|max:255',
+        ]);
+        
         $task = Task::find($id);
+        $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
         
@@ -112,5 +128,12 @@ class TasksController extends Controller
         $task->delete();
         
         return redirect('/');
+    }
+    
+    public function GetArrStatus()
+    {
+        $arr_status = [ 0 => '未着手', 1 => '進行中', 2 => '完了',];
+        
+        return $arr_status;
     }
 }
